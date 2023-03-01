@@ -3,8 +3,6 @@ export type Message = {
   content: string;
 };
 
-export type Messages = Message[];
-
 type MessageCallback = (message: Message) => void;
 
 export class ChatClient {

@@ -1,12 +1,16 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
+import Layout from '../components/Layout';
+import Messages from '../components/Messages';
 import Prompt from '../components/Prompt';
 import { useAppContext } from '../context/app';
-import { Messages } from '../lib/chat';
+import { Message } from '../lib/chat';
+
+const channel = 'chat';
 
 export default function Index() {
-  const [messages, setMessages] = useState<Messages>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const { chatClient } = useAppContext();
 
   useEffect(() => {
@@ -18,20 +22,14 @@ export default function Index() {
   }, [chatClient]);
 
   return (
-    <>
+    <Layout>
       <Head>
-        <title>Chat</title>
+        <title>#{channel}</title>
       </Head>
-      <h1>Hello, world!</h1>
-      <div>
-        <ul>
-          {messages.map((msg) => (
-            <li key={msg.id}>{msg.content}</li>
-          ))}
-        </ul>
-      </div>
+      <h1>#{channel}</h1>
+      <Messages messages={messages} />
       <Prompt onSendMessage={(message) => chatClient.sendMessage(message)} />
-    </>
+    </Layout>
   );
 }
 
