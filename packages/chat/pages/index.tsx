@@ -1,25 +1,17 @@
 import { useEffect, useState } from 'react';
 import Prompt from '../components/prompt';
-import { io } from 'socket.io-client';
-
-type Message = {
-  id: string;
-  content: string;
-};
-
-type Messages = Message[];
-
-const socket = io('ws://localhost:3333');
+import { useAppContext } from '../context/app';
+import { Messages } from '../lib/chat';
 
 export default function Index() {
   const [messages, setMessages] = useState<Messages>([]);
+  const { chatClient } = useAppContext();
 
   useEffect(() => {
-    socket.on('message', (message: Message) => {
-      console.log(JSON.stringify(message));
-      setMessages((messages) => [...messages, message]);
-    });
-  }, []);
+    chatClient.registerOnMessageCallback((message) =>
+      setMessages((messages) => [...messages, message])
+    );
+  }, [chatClient]);
 
   return (
     <>
@@ -31,11 +23,7 @@ export default function Index() {
           ))}
         </ul>
       </div>
-      <Prompt
-        onSendMessage={(content) => {
-          socket.emit('message', content);
-        }}
-      />
+      <Prompt onSendMessage={(message) => chatClient.sendMessage(message)} />
     </>
   );
 }

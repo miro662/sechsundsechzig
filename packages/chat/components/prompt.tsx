@@ -11,8 +11,8 @@ export default function Prompt({
     <div>
       <form
         onSubmit={(ev) => {
-          onSendMessage(content);
           ev.preventDefault();
+          onSendMessage(content);
           setContent('');
         }}
       >
