@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import Prompt from '../components/Prompt';
 import { useAppContext } from '../context/app';
@@ -16,6 +17,9 @@ export default function Index() {
 
   return (
     <>
+      <Head>
+        <title>Chat</title>
+      </Head>
       <h1>Hello, world!</h1>
       <div>
         <ul>
@@ -32,7 +36,7 @@ export default function Index() {
 export const getStaticProps: GetStaticProps = () => {
   return {
     props: {
-      chatClientUrl: 'ws://localhost:3333',
+      chatClientUrl: process.env.CHAT_SERVER_URL,
     },
   };
 };
