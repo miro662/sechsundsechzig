@@ -1,5 +1,3 @@
-import { Socket, io } from 'socket.io-client';
-
 export type Message = {
   id: string;
   content: string;
@@ -7,23 +5,27 @@ export type Message = {
 
 export type Messages = Message[];
 
-const MessageEvent = 'message';
+type MessageCallback = (message: Message) => void;
 
 export class ChatClient {
-  socket: Socket;
+  onMessageCallback: MessageCallback;
+  socket: WebSocket;
 
   constructor(server: string) {
-    this.socket = io(server);
-  }
-
-  public registerOnMessageCallback(callback: (Message) => void): void {
-    this.socket.off(MessageEvent);
-    this.socket.on(MessageEvent, (message: Message) => {
-      callback(message);
+    this.socket = new WebSocket(server);
+    this.socket.addEventListener('message', (event) => {
+      const message = JSON.parse(event.data) as Message;
+      if (this.onMessageCallback != null) {
+        this.onMessageCallback(message);
+      }
     });
   }
 
+  public registerOnMessageCallback(callback: MessageCallback): void {
+    this.onMessageCallback = callback;
+  }
+
   public sendMessage(content: string): void {
-    this.socket.emit(MessageEvent, content);
+    this.socket.send(content);
   }
 }

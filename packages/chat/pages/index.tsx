@@ -10,9 +10,11 @@ export default function Index() {
   const { chatClient } = useAppContext();
 
   useEffect(() => {
-    chatClient.registerOnMessageCallback((message) =>
-      setMessages((messages) => [...messages, message])
-    );
+    if (chatClient != null) {
+      chatClient.registerOnMessageCallback((message) =>
+        setMessages((messages) => [...messages, message])
+      );
+    }
   }, [chatClient]);
 
   return (
