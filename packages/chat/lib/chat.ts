@@ -12,8 +12,8 @@ const MessageEvent = 'message';
 export class ChatClient {
   socket: Socket;
 
-  constructor() {
-    this.socket = io('ws://localhost:3333');
+  constructor(server: string) {
+    this.socket = io(server);
   }
 
   public registerOnMessageCallback(callback: (Message) => void): void {
