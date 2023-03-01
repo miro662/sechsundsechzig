@@ -1,8 +1,8 @@
 import Redis from 'ioredis';
-import { Channel } from './Channel';
+import { ChannelBackend } from './Channel';
 import { redis } from './main';
 
-export class RedisChannel implements Channel {
+export class RedisChannelBackend implements ChannelBackend {
   redis: Redis;
   constructor() {
     this.redis = new Redis();

@@ -4,23 +4,23 @@
   display: flex
   color: #8fbcbb
 
-  .ps1
-    border-bottom: solid 1px #8fbcbb
-    padding-right: 0.5em
-
-
   input
     background: none
     border: none
     color: #8fbcbb
     font-family: inherit
     font-size: inherit
-    margin: 0
+    margin: 0 1em 1px 0.5em
     appearance: none
     padding: 0
     outline: 0
     flex-grow: 1
-    border-bottom: solid 1px #8fbcbb
+    &:focus
+      margin: 0 1em 0 0.5em
+      border-bottom: solid 1px #8fbcbb
+    &:focus::before
+      border-bottom: solid 1px #8fbcbb
+      
     
   button
     color: #8fbcbb
