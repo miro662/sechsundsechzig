@@ -1,21 +1,27 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import express from 'express';
-import * as path from 'path';
+import { createServer } from 'http';
+import { Socket, Server } from 'socket.io';
+import {v4 as uuidv4} from 'uuid';
 
 const app = express();
+const server = createServer(app);
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
-
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to chat-server!' });
+const io = new Server(server, {
+  cors: {
+    origin: '*'
+  }
 });
 
-const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+io.on("connection", (socket: Socket) => {
+  console.log(`Connection established with ${socket.id}`)
+  socket.on("message", message => {
+    console.log(`Message received from ${socket.id}: ${message}`);
+    io.emit("message", {
+      id: uuidv4(),
+      content: message
+    })
+  })
 });
+
+server.listen(3333);
 server.on('error', console.error);

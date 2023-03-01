@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Prompt from "../components/prompt";
+import { io } from "socket.io-client"
 
 type Message = {
     id: string
@@ -8,14 +9,17 @@ type Message = {
 
 type Messages = Message[];
 
+const socket = io("ws://localhost:3333");
+
 export default function Index() {
     const [messages, setMessages] = useState<Messages>([]);
-    const [id, setNewId] = useState(0);
-    const nextId = () => {
-        const lastId = id;
-        setNewId(id + 1);
-        return lastId;
-    }
+
+    useEffect(() => {
+        socket.on("message", (message: Message) => {
+            console.log(JSON.stringify(message));
+            setMessages(messages => [...messages, message])
+        });
+    }, []);
 
     return <>
         <h1>Hello, world!</h1>
@@ -29,11 +33,7 @@ export default function Index() {
             </ul>
         </div>
         <Prompt onSendMessage={content => {
-            const newMessage = {
-                id: nextId().toString(),
-                content: content
-            }
-            setMessages([...messages, newMessage])
+            socket.emit("message", content);
         }}/>
     </>
 }
