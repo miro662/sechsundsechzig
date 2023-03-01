@@ -1,0 +1,40 @@
+{
+  "name": "chat-protocol",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/chat-protocol/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/chat-protocol",
+        "main": "packages/chat-protocol/src/index.ts",
+        "tsConfig": "packages/chat-protocol/tsconfig.lib.json",
+        "assets": ["packages/chat-protocol/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/chat-protocol/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/chat-protocol/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

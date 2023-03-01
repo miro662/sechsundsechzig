@@ -1,3 +1,4 @@
+import { Message } from 'chat-protocol';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
@@ -5,7 +6,6 @@ import Layout from '../components/Layout';
 import Messages from '../components/Messages';
 import Prompt from '../components/Prompt';
 import { useAppContext } from '../context/app';
-import { Message } from '../lib/chat';
 
 const channel = 'chat';
 
@@ -15,7 +15,10 @@ export default function Index() {
 
   useEffect(() => {
     if (chatClient != null) {
-      chatClient.registerOnMessageCallback((message) =>
+      chatClient.registerClientMessageCallback((message) =>
+        setMessages((messages) => [...messages, message])
+      );
+      chatClient.registerServerMessageCallback((message) =>
         setMessages((messages) => [...messages, message])
       );
     }
@@ -24,7 +27,7 @@ export default function Index() {
   return (
     <Layout>
       <Head>
-        <title>#{channel}</title>
+        <title>{'#' + channel}</title>
       </Head>
       <h1>#{channel}</h1>
       <Messages messages={messages} />

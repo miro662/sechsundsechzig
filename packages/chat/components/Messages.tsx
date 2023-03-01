@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Message } from '../lib/chat';
+import { Message } from 'chat-protocol';
 import MessageComponent from './Message';
 import style from './Messages.module.sass';
 
@@ -14,8 +14,13 @@ export default function Messages({ messages }: MessagesProps) {
   return (
     <div className={style.messages}>
       <ul>
-        {messages.map(({ id, content }) => (
-          <MessageComponent key={id} content={content} />
+        {messages.map(({ user, id, content, date }) => (
+          <MessageComponent
+            username={user}
+            key={id}
+            content={content}
+            date={date}
+          />
         ))}
       </ul>
       <div ref={bottom}></div>

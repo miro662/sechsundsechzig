@@ -1,26 +1,39 @@
-export type Message = {
-  id: string;
-  content: string;
-};
+import { deserialize, ClientMessage, ServerMessage } from 'chat-protocol';
 
-type MessageCallback = (message: Message) => void;
+type ClientMessageCallback = (message: ClientMessage) => void;
+type ServerMessageCallback = (message: ServerMessage) => void;
 
 export class ChatClient {
-  onMessageCallback: MessageCallback;
+  clientMessageCallback?: ClientMessageCallback;
+  serverMessageCallback?: ServerMessageCallback;
   socket: WebSocket;
 
   constructor(server: string) {
     this.socket = new WebSocket(server);
     this.socket.addEventListener('message', (event) => {
-      const message = JSON.parse(event.data) as Message;
-      if (this.onMessageCallback != null) {
-        this.onMessageCallback(message);
+      console.log('xD');
+      const message = deserialize(event.data);
+      switch (message.type) {
+        case 'client_message':
+          if (this.clientMessageCallback != null) {
+            this.clientMessageCallback(message);
+          }
+          break;
+        case 'server_message':
+          if (this.serverMessageCallback != null) {
+            this.serverMessageCallback(message);
+          }
+          break;
       }
     });
   }
 
-  public registerOnMessageCallback(callback: MessageCallback): void {
-    this.onMessageCallback = callback;
+  public registerClientMessageCallback(callback: ClientMessageCallback): void {
+    this.clientMessageCallback = callback;
+  }
+
+  public registerServerMessageCallback(callback: ServerMessageCallback): void {
+    this.serverMessageCallback = callback;
   }
 
   public sendMessage(content: string): void {
